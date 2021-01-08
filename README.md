@@ -1,2 +1,2 @@
-# tf_templates
+# Terraform Templates
 Terraform templates for OCI provider
