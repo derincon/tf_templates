@@ -230,6 +230,125 @@ variable "defined_tag_value" {
   description = "defined resource tag value"
 }
 
+variable "tag_0_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+variable "tag_0_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_1_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_1_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_2_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_2_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_3_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_3_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_4_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_4_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_5_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_5_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_6_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_6_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_7_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_7_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_8_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_8_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_9_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_9_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
 variable "free_form_tag" {
   type    = string
   default = "~!@#$%^&*()"
@@ -241,4 +360,3 @@ variable "free_form_tag_value" {
   default = "~!@#$%^&*()"
   description = "free form resource tag value"
 }
-

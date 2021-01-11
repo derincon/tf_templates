@@ -83,10 +83,42 @@ locals {
   defined_tag_value   = false == local.use_defined_tags ? "" : var.defined_tag_value
   free_form_tag       = false == local.use_freeform_tags ? "" : var.free_form_tag
   free_form_tag_value = false == local.use_freeform_tags ? "" : var.free_form_tag_value
+  #defined user tags
+  tag_0_defined_tags = var.tag_0_key == "~!@#$%^&*()" && var.tag_0_key_value == "~!@#$%^&*()" ? false : true
+  tag_1_defined_tags = var.tag_1_key == "~!@#$%^&*()" && var.tag_1_key_value == "~!@#$%^&*()" ? false : true
+  tag_2_defined_tags = var.tag_2_key == "~!@#$%^&*()" && var.tag_2_key_value == "~!@#$%^&*()" ? false : true
+  tag_3_defined_tags = var.tag_3_key == "~!@#$%^&*()" && var.tag_3_key_value == "~!@#$%^&*()" ? false : true
+  tag_4_defined_tags = var.tag_4_key == "~!@#$%^&*()" && var.tag_4_key_value == "~!@#$%^&*()" ? false : true
+  tag_5_defined_tags = var.tag_5_key == "~!@#$%^&*()" && var.tag_5_key_value == "~!@#$%^&*()" ? false : true
+  tag_6_defined_tags = var.tag_6_key == "~!@#$%^&*()" && var.tag_6_key_value == "~!@#$%^&*()" ? false : true
+  tag_7_defined_tags = var.tag_7_key == "~!@#$%^&*()" && var.tag_7_key_value == "~!@#$%^&*()" ? false : true
+  tag_8_defined_tags = var.tag_8_key == "~!@#$%^&*()" && var.tag_8_key_value == "~!@#$%^&*()" ? false : true
+  tag_9_defined_tags = var.tag_9_key == "~!@#$%^&*()" && var.tag_9_key_value == "~!@#$%^&*()" ? false : true
+
+  tag_0_key           = false == local.tag_0_defined_tags ? "" : var.tag_0_key
+  tag_0_key_value     = false == local.tag_0_defined_tags ? "" : var.tag_0_key_value
+  tag_1_key           = false == local.tag_1_defined_tags ? "" : var.tag_1_key
+  tag_1_key_value     = false == local.tag_1_defined_tags ? "" : var.tag_1_key_value
+  tag_2_key           = false == local.tag_2_defined_tags ? "" : var.tag_2_key
+  tag_2_key_value     = false == local.tag_2_defined_tags ? "" : var.tag_2_key_value
+  tag_3_key           = false == local.tag_3_defined_tags ? "" : var.tag_3_key
+  tag_3_key_value     = false == local.tag_3_defined_tags ? "" : var.tag_3_key_value
+  tag_4_key           = false == local.tag_4_defined_tags ? "" : var.tag_4_key
+  tag_4_key_value     = false == local.tag_4_defined_tags ? "" : var.tag_4_key_value
+  tag_5_key           = false == local.tag_5_defined_tags ? "" : var.tag_5_key
+  tag_5_key_value     = false == local.tag_5_defined_tags ? "" : var.tag_5_key_value
+  tag_6_key           = false == local.tag_6_defined_tags ? "" : var.tag_6_key
+  tag_6_key_value     = false == local.tag_6_defined_tags ? "" : var.tag_6_key_value
+  tag_7_key           = false == local.tag_7_defined_tags ? "" : var.tag_7_key
+  tag_7_key_value     = false == local.tag_7_defined_tags ? "" : var.tag_7_key_value
+  tag_8_key           = false == local.tag_8_defined_tags ? "" : var.tag_8_key
+  tag_8_key_value     = false == local.tag_8_defined_tags ? "" : var.tag_8_key_value
+  tag_9_key           = false == local.tag_9_defined_tags ? "" : var.tag_9_key
+  tag_9_key_value     = false == local.tag_9_defined_tags ? "" : var.tag_9_key_value
 
   defined_tags = zipmap(
-    compact([trimspace(local.defined_tag)]),
-    compact([trimspace(local.defined_tag_value)]),
+    compact([trimspace(local.defined_tag), trimspace(local.tag_0_key), trimspace(local.tag_1_key), trimspace(local.tag_2_key), trimspace(local.tag_3_key), trimspace(local.tag_4_key), trimspace(local.tag_5_key), trimspace(local.tag_6_key), trimspace(local.tag_7_key), trimspace(local.tag_8_key), trimspace(local.tag_9_key),]),
+    compact([trimspace(local.defined_tag_value), trimspace(local.tag_0_key_value), trimspace(local.tag_1_key_value), trimspace(local.tag_2_key_value), trimspace(local.tag_3_key_value), trimspace(local.tag_4_key_value), trimspace(local.tag_5_key_value), trimspace(local.tag_6_key_value), trimspace(local.tag_7_key_value), trimspace(local.tag_8_key_value), trimspace(local.tag_9_key_value),]),
   )
   freeform_tags = zipmap(
     compact([trimspace(local.free_form_tag)]),
