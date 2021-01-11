@@ -70,23 +70,28 @@ variable "lgpw_route_table_rule_description" {
 
 
 variable "rt_rules" {
-	default = [ 
-		{
-	        "destination" 		= lookup(data.oci_core_services.test_services.services[0],"cidr_block")
+	default = [ {
+	        "destination" 		= "lookup(data.oci_core_services.test_services.services[0],\"cidr_block\")"
 	        "destination_type" 	= "SERVICE_CIDR_BLOCK"
-	        "network_entity_id" = element(concat(oci_core_service_gateway.service_gateway.*.id, list("")), 0)
+	        "network_entity_id" = "element(concat(oci_core_service_gateway.service_gateway.*.id, list(\"\")), 0)"
 	        "description" 		= "For backups"
-	        "isrequired" 		= var.servicegw
-	    },{
-	        "destination" 		= var.natgw_route_cidr_block
-	        "network_entity_id" = element(concat(oci_core_nat_gateway.nat_gateway.*.id, list("")), 0)
+	        "isrequired" 		= "var.servicegw"
+	    },
+	    {
+	        "destination" 		= "var.natgw_route_cidr_block"
+	        "network_entity_id" = "element(concat(oci_core_nat_gateway.nat_gateway.*.id, list(\"\")), 0)"
 	        "description" 		= "For patches"
-	        "isrequired" 		= var.natgw
-	    }
-	]
+	        "isrequired" 		= "var.natgw"
+	    }]
 }
 
- 
+
+variable "rt_rules" {
+	description = "List of route table rules"
+	type        = map(object)
+	default     = { }
+}
+
 
 cd /u01/DELA_TEST/DEMOVCN && terraform destroy -auto-approve ; cd /u01/ ; rm -rf /u01/DELA_TEST/
 value = "${element(concat(oci_core_nat_gateway.nat_gateway.*.id, list("")), 0)}"
