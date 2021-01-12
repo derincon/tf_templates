@@ -25,7 +25,7 @@ variable "region" {
 */
 variable "compartment_ocid" {
   type        = string
-  description = "compartment for weblogic instances"
+  description = "compartment for weblogic instance"
 }
 
 // Note: This is the opc user's SSH public key text and not the key file path.
