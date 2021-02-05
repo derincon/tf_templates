@@ -25,7 +25,7 @@ variable "region" {
 */
 variable "compartment_ocid" {
   type        = string
-  description = "compartment for weblogic instance"
+  description = "compartment for weblogic instances"
 }
 
 // Note: This is the opc user's SSH public key text and not the key file path.
@@ -39,16 +39,10 @@ variable "service_name" {
   description = "prefix for stack resources"
 }
 
-variable "instance_create_vnic_details_private_ip" {
-  type        = string
-  default     = "10.70.41.34"
-  description = "vnic private_ip"
-}
-
 #Provide WLS custom image OCID
 #DONOT MODIFY THIS FIELD AS IT IS REFERRED IN HUDSON
 variable "instance_image_id" {
-default = "ocid1.image.oc1..aaaaaaaa3pjupycbpz3lfeu7soeut4ymaalseb2bam3j3sotu44l7m7ew7ma"
+default = "ocid1.image.oc1..aaaaaaaa5sqam6txe4fvebz7kc2a7dh4xnufabhelkfehkuwdrkmxrw6seuq"
 }
 
 variable "network_compartment_id" {
@@ -167,6 +161,17 @@ variable "allow_manual_domain_extension" {
   description = "flag indicating that domain will be manually extended for managed servers"
 }
 
+variable "wls_expose_admin_port" {
+  type = bool
+  default = false
+  description = "[WARNING] Selecting this option will expose the console to the internet if the default 0.0.0.0/0 CIDR is used. You should change the CIDR range below to allow access to a trusted IP range."
+}
+
+variable "wls_admin_port_source_cidr" {
+  type = string
+  default = "0.0.0.0/0"
+  description = "Create a security list to allow access to the WebLogic Administration Console port to the source CIDR range. [WARNING] Keeping the default 0.0.0.0/0 CIDR will expose the console to the internet. You should change the CIDR range to allow access to a trusted IP range."
+}
 
 /**
  * Supported versions:

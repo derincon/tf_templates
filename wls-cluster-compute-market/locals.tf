@@ -71,7 +71,7 @@ locals {
   lb_availability_domain_name1 = var.lb_subnet_1_id != "" ? (local.use_regional_subnet ? "" : data.oci_core_subnet.lb_subnet_1_id[0].availability_domain) : var.lb_subnet_1_availability_domain_name
   lb_availability_domain_name2 = var.lb_subnet_2_id != "" ? (local.use_regional_subnet ? "" : data.oci_core_subnet.lb_subnet_2_id[0].availability_domain) : var.lb_subnet_2_availability_domain_name
 
-  #map of Tag key and value
+#map of Tag key and value
   #special chars string denotes empty values for tags for validation purposes
   #otherwise zipmap function below fails first for empty strings before validators executed
   use_defined_tags = var.defined_tag == "~!@#$%^&*()" && var.defined_tag_value == "~!@#$%^&*()" ? false : true
