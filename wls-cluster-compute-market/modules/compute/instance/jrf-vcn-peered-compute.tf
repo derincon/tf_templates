@@ -1,15 +1,12 @@
 /*
- * Copyright (c) 2019, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
  */
 
-
-
-// WLS instance with no JRF
-resource "oci_core_instance" "wls_no_jrf_instance" {
-  count = !local.is_apply_JRF? var.numVMInstances: 0
+// WLS instance with OCI DB with VCN peering
+resource "oci_core_instance" "wls_ocidb_peered_vcn_instance" {
+  count = local.is_oci_db && var.is_vcn_peered? var.numVMInstances: 0
 
   availability_domain = var.use_regional_subnet?local.ad_names[count.index % length(local.ad_names)]:var.availability_domain
-
   compartment_id      = var.compartment_ocid
   display_name        = "${local.host_label}-${count.index}"
   shape               = var.instance_shape
@@ -51,7 +48,7 @@ resource "oci_core_instance" "wls_no_jrf_instance" {
     wls_admin_user                     = var.wls_admin_user
     wls_admin_password_ocid            = var.wls_admin_password
     wls_domain_name                    = var.wls_domain_name
-    is_admin_instance                  = count.index == 0 ? true : false
+    is_admin_instance                  = (count.index == 0 )
     wls_ext_admin_port                 = var.wls_extern_admin_port
     wls_secured_ext_admin_port         = var.wls_extern_ssl_admin_port
     wls_admin_port                     = var.wls_admin_port
@@ -70,11 +67,16 @@ resource "oci_core_instance" "wls_no_jrf_instance" {
     wls_cluster_mc_port                = var.wls_cluster_mc_port
     wls_machine_name                   = var.wls_machine_name
     total_vm_count                     = var.numVMInstances
+    allow_manual_domain_extension      = var.allow_manual_domain_extension
+    load_balancer_id                   = var.load_balancer_id
+    add_loadbalancer                   = var.add_loadbalancer
+    is_lb_private                      = var.is_lb_private
     assign_public_ip                   = var.assign_public_ip
     wls_existing_vcn_id                = var.wls_existing_vcn_id
     wls_subnet_ocid                    = var.subnet_ocid
     is_bastion_instance_required       = var.is_bastion_instance_required
-
+    variant                            = var.patching_tool_key
+    patching_actions                   = var.wls_version=="11.1.1.7"?var.supported_patching_actions_11g:var.supported_patching_actions
     wls_edition = var.wls_edition
 
     // OCI DB params
@@ -82,6 +84,29 @@ resource "oci_core_instance" "wls_no_jrf_instance" {
 
     // DB Password OCID
     db_password_ocid = var.db_password
+
+    db_hostname_prefix = lookup(data.oci_database_db_systems.ocidb_db_systems[0].db_systems[0], "hostname")
+    db_host_domain     = lookup(data.oci_database_db_systems.ocidb_db_systems[0].db_systems[0], "domain")
+    db_shape           = lookup(data.oci_database_db_systems.ocidb_db_systems[0].db_systems[0], "shape")
+    db_version         = data.oci_database_db_home.ocidb_db_home[0].db_version
+    db_name            = data.oci_database_database.ocidb_database[0].db_name
+    db_unique_name     = data.oci_database_database.ocidb_database[0].db_unique_name
+    pdb_name           = var.ocidb_pdb_service_name
+    db_node_count      = lookup(data.oci_database_db_systems.ocidb_db_systems[0].db_systems[0],  "node_count")
+    db_user            = var.db_user
+    db_port            = var.db_port
+    db_storage_management = local.db_storage_management
+    db_subnet_id       = lookup(data.oci_database_db_systems.ocidb_db_systems[0].db_systems[0], "subnet_id")
+
+    network_compartment_id         = var.network_compartment_id
+    wls_subnet_cidr                = local.wls_subnet_cidr
+    service_name_prefix            = var.service_name_prefix
+    ocidb_existing_vcn_add_seclist = var.ocidb_existing_vcn_add_seclist
+    ocidb_network_compartment_id   = var.ocidb_network_compartment_id
+    ocidb_existing_vcn_id          = var.ocidb_existing_vcn_id
+
+    // RCU params
+    rcu_component_list = var.wls_version_to_rcu_component_list_map[var.wls_version]
 
     //ATP DB Related params
     is_atp_db                          = local.is_atp_db
@@ -101,10 +126,6 @@ resource "oci_core_instance" "wls_no_jrf_instance" {
     logs_dir                           = var.logs_dir
     apply_JRF                          = local.is_apply_JRF
     status_check_timeout_duration_secs = var.status_check_timeout_duration_secs
-    allow_manual_domain_extension      = var.allow_manual_domain_extension
-    load_balancer_id                   = var.load_balancer_id
-    add_loadbalancer                   = var.add_loadbalancer
-    is_lb_private                      = var.is_lb_private
 
     // App DB Params - OCI DB
     configure_app_db      = var.configure_app_db
@@ -122,15 +143,8 @@ resource "oci_core_instance" "wls_no_jrf_instance" {
     appdb_port            = var.app_db_port
     appdb_storage_management = local.is_oci_app_db ? local.appdb_storage_management : ""
     appdb_subnet_id       = local.is_oci_app_db ? lookup(data.oci_database_db_systems.appdb_db_systems[0].db_systems[0], "subnet_id") : ""
-    # Optional AppDB Peering
-    appdb_scan_ip_list     = var.disable_app_db_vcn_peering ? local.appdb_scan_ip_list : ""
-    appdb_host_private_ips = var.disable_app_db_vcn_peering ? local.appdb_prviate_ip_list : ""
-    appdb_hostname_list    = var.disable_app_db_vcn_peering ? local.appdb_hostname_list : ""
 
-    // For force opening DB port on the subnet
-    network_compartment_id         = var.network_compartment_id
-    wls_subnet_cidr                = local.wls_subnet_cidr
-    service_name_prefix            = var.service_name_prefix
+    // For force open DB network
     appdb_existing_vcn_add_seclist = local.is_oci_app_db ? var.appdb_existing_vcn_add_seclist : ""
     appdb_network_compartment_id   = local.is_oci_app_db ? var.appdb_network_compartment_id : ""
     appdb_existing_vcn_id          = local.is_oci_app_db ? var.appdb_existing_vcn_id : ""
@@ -143,7 +157,8 @@ resource "oci_core_instance" "wls_no_jrf_instance" {
     is_app_atp_dedicated = local.is_atp_app_db ? lookup(data.oci_database_autonomous_database.app_atp_db[0],"is_dedicated") : ""
 
     // For VCN peering
-    is_vcn_peered      = false
+    is_vcn_peered      = true
+    wls_dns_vm_ip      = var.wls_dns_vm_ip
 
     // For IDCS
     is_idcs_selected                    = var.is_idcs_selected
@@ -166,6 +181,14 @@ resource "oci_core_instance" "wls_no_jrf_instance" {
     idcs_cloudgate_docker_image_tar     = var.idcs_cloudgate_docker_image_tar
     idcs_cloudgate_docker_image_version = var.idcs_cloudgate_docker_image_version
     idcs_cloudgate_docker_image_name    = var.idcs_cloudgate_docker_image_name
+
+    // Manual Peering - Pick both scanip list and dbhost privateIP list to cater for both SUITE and non-SUITE editions.
+    db_scan_ip_list        = var.disable_infra_db_vcn_peering ? local.infradb_scanip_list : ""
+    db_host_private_ips    = var.disable_infra_db_vcn_peering ? local.infradb_private_ip_list : ""
+    infradb_hostname_list  = var.disable_infra_db_vcn_peering ? local.infradb_hostname_list : ""
+    appdb_scan_ip_list     = var.disable_app_db_vcn_peering ? local.appdb_scan_ip_list : ""
+    appdb_host_private_ips = var.disable_app_db_vcn_peering ? local.appdb_prviate_ip_list : ""
+    appdb_hostname_list    = var.disable_app_db_vcn_peering ? local.appdb_hostname_list : ""
   }
 
   #if there is only 1 AD or AD subnets are used, spread VM across FDs,

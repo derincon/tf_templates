@@ -39,6 +39,12 @@ variable "service_name" {
   description = "prefix for stack resources"
 }
 
+variable "instance_create_vnic_details_private_ip" {
+  type        = string
+  default     = "10.70.41.34"
+  description = "vnic private_ip"
+}
+
 #Provide WLS custom image OCID
 #DONOT MODIFY THIS FIELD AS IT IS REFERRED IN HUDSON
 variable "instance_image_id" {
