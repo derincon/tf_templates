@@ -25,7 +25,7 @@ variable "region" {
 */
 variable "compartment_ocid" {
   type        = string
-  description = "compartment for weblogic instances"
+  description = "compartment for weblogic instance"
 }
 
 // Note: This is the opc user's SSH public key text and not the key file path.
@@ -39,10 +39,16 @@ variable "service_name" {
   description = "prefix for stack resources"
 }
 
+variable "instance_create_vnic_details_private_ip" {
+  type        = string
+  default     = "10.70.41.34"
+  description = "vnic private_ip"
+}
+
 #Provide WLS custom image OCID
 #DONOT MODIFY THIS FIELD AS IT IS REFERRED IN HUDSON
 variable "instance_image_id" {
-default = "ocid1.image.oc1..aaaaaaaa5sqam6txe4fvebz7kc2a7dh4xnufabhelkfehkuwdrkmxrw6seuq"
+default = "ocid1.image.oc1..aaaaaaaa3pjupycbpz3lfeu7soeut4ymaalseb2bam3j3sotu44l7m7ew7ma"
 }
 
 variable "network_compartment_id" {
@@ -161,17 +167,6 @@ variable "allow_manual_domain_extension" {
   description = "flag indicating that domain will be manually extended for managed servers"
 }
 
-variable "wls_expose_admin_port" {
-  type = bool
-  default = false
-  description = "[WARNING] Selecting this option will expose the console to the internet if the default 0.0.0.0/0 CIDR is used. You should change the CIDR range below to allow access to a trusted IP range."
-}
-
-variable "wls_admin_port_source_cidr" {
-  type = string
-  default = "0.0.0.0/0"
-  description = "Create a security list to allow access to the WebLogic Administration Console port to the source CIDR range. [WARNING] Keeping the default 0.0.0.0/0 CIDR will expose the console to the internet. You should change the CIDR range to allow access to a trusted IP range."
-}
 
 /**
  * Supported versions:
@@ -241,6 +236,125 @@ variable "defined_tag_value" {
   description = "defined resource tag value"
 }
 
+variable "tag_0_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+variable "tag_0_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_1_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_1_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_2_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_2_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_3_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_3_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_4_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_4_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_5_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_5_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_6_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_6_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_7_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_7_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_8_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_8_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
+variable "tag_9_key" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag name"
+}
+
+variable "tag_9_key_value" {
+  type    = string
+  default = "~!@#$%^&*()"
+  description = "defined resource tag value"
+}
+
 variable "free_form_tag" {
   type    = string
   default = "~!@#$%^&*()"
@@ -252,5 +366,3 @@ variable "free_form_tag_value" {
   default = "~!@#$%^&*()"
   description = "free form resource tag value"
 }
-
-
