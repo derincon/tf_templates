@@ -9,6 +9,8 @@ variable "availability_domain" {}
 
 variable "subnet_ocid" {}
 
+variable "ad_number" {}
+
 variable "ssh_public_key" {
   type = string
 }
@@ -30,6 +32,11 @@ variable "numVMInstances" {
 }
 
 # WLS Related variables
+
+variable "wls_subnet_id"{
+  type = string
+}
+
 variable "wls_admin_user" {
   type = string
 }
