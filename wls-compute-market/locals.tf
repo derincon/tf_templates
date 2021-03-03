@@ -65,10 +65,10 @@ locals {
 
   #Availability Domains
   ad_names                    = compact(data.template_file.ad_names.*.rendered)
-  ad_number                    = data.template_file.ad_number
+  ad_number                   = compact(data.template_file.ad_number.*.rendered)
   bastion_availability_domain = var.bastion_subnet_id != "" ? (local.use_regional_subnet ? local.ad_names[0] : data.oci_core_subnet.bastion_subnet[0].availability_domain) : (local.use_regional_subnet ? local.ad_names[0] : var.wls_availability_domain_name)
   #for existing wls subnet, get AD from the subnet
-  wls_availability_domain      = var.wls_subnet_id == "" ? var.wls_availability_domain_name : local.ad_number
+  wls_availability_domain      = var.wls_subnet_id == "" ? var.wls_availability_domain_name : local.ad_number[0]
   lb_availability_domain_name1 = var.lb_subnet_1_id != "" ? (local.use_regional_subnet ? "" : data.oci_core_subnet.lb_subnet_1_id[0].availability_domain) : var.lb_subnet_1_availability_domain_name
   lb_availability_domain_name2 = var.lb_subnet_2_id != "" ? (local.use_regional_subnet ? "" : data.oci_core_subnet.lb_subnet_2_id[0].availability_domain) : var.lb_subnet_2_availability_domain_name
 

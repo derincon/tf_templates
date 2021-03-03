@@ -33,8 +33,7 @@ data "template_file" "ad_names" {
 }
 
 data "template_file" "ad_number" {
-  adnumb    = var.ad_number
-  template =  lookup(data.oci_identity_availability_domains.ADs.availability_domains[adnumb], "name")
+  template  =  (element(data.oci_identity_availability_domains.ADs.availability_domains, (var.ad_number - 1))).name
 }
 
 data "oci_limits_limit_values" "compute_shape_service_limits" {
