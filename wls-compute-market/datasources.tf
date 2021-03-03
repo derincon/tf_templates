@@ -7,7 +7,7 @@ data "oci_identity_availability_domains" "ADs" {
 }
 data "oci_identity_tenancy" "tenancy" {
   #Required
-  tenancy_id = "${var.tenancy_ocid}"
+  tenancy_id = var.tenancy_ocid
 }
 locals {
   num_ads = length(
