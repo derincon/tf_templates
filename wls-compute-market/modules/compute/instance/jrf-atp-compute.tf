@@ -6,7 +6,7 @@
 resource "oci_core_instance" "wls-atp-instance" {
   count = local.is_atp_db? var.numVMInstances: 0
 
-  availability_domain = var.use_regional_subnet?local.ad_number:var.availability_domain
+  availability_domain = var.use_regional_subnet == "" ? var.availability_domain : local.ad_number[0]
   compartment_id      = var.compartment_ocid
   display_name        = "${local.host_label}-${count.index}"
   shape               = var.instance_shape
@@ -178,7 +178,7 @@ resource "oci_core_instance" "wls-atp-instance" {
   }
   #if there is only 1 AD or AD subnets are used, spread VM across FDs,
   #however for more than one AD spread VMs across ADs  and let system select the FD in the respective ADs
-  fault_domain = (length(local.ad_names)==1 || !var.use_regional_subnet)?lookup(data.oci_identity_fault_domains.wls_fault_domains.fault_domains[(count.index + 1) % local.num_fault_domains], "name"):""
+  fault_domain = (length(local.ad_number)==1 || !var.use_regional_subnet)?lookup(data.oci_identity_fault_domains.wls_fault_domains.fault_domains[(count.index + 1) % local.num_fault_domains], "name"):""
   timeouts {
     create = "${var.provisioning_timeout_mins}m"
   }

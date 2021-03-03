@@ -37,7 +37,9 @@ variable "ad_names" {
 }
 
 variable "ad_number" {
-    type  = string
+    description = "The availability domain number of the instance. If none is provided, it will start with AD-1 and continue in round-robin."
+    type        = number
+    default     = 2
 }
 
 variable "index" {
