@@ -32,6 +32,10 @@ data "template_file" "ad_names" {
   template =  (var.instance_shape=="VM.Standard.E3.Flex" || (tonumber(lookup(data.oci_limits_limit_values.compute_shape_service_limits[count.index].limit_values[0], "value")) > 0))?lookup(data.oci_identity_availability_domains.ADs.availability_domains[count.index], "name"):""
 }
 
+data "template_file" "ad_number" {
+  template  =  (element(data.oci_identity_availability_domains.ADs.availability_domains, (var.ad_number - 1))).name
+}
+
 data "oci_limits_limit_values" "compute_shape_service_limits" {
     count    = length(data.oci_identity_availability_domains.ADs.availability_domains)
     #Required
