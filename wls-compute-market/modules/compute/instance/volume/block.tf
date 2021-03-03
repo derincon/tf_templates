@@ -4,7 +4,7 @@
 
 resource "oci_core_volume" "wls-block-volume" {
   count               = var.numVMInstances
-  availability_domain = var.wls_subnet_id == "" ? var.availability_domain : local.ad_number[0]
+  availability_domain = var.use_regional_subnet == "" ? var.availability_domain : local.ad_number[0]
   compartment_id      = var.compartment_ocid
   display_name        = "${var.compute_name_prefix}-${var.volume_name}-block-${count.index}"
   size_in_gbs         = var.volume_size

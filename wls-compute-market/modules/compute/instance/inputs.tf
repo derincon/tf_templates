@@ -33,10 +33,6 @@ variable "numVMInstances" {
 
 # WLS Related variables
 
-variable "wls_subnet_id"{
-  type = string
-}
-
 variable "wls_admin_user" {
   type = string
 }
