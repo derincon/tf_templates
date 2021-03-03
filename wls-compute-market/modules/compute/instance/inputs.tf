@@ -52,6 +52,12 @@ variable "bootStrapFile" {
   default = "./modules/compute/instance/userdata/bootstrap"
 }
 
+variable "ad_number" {
+    description = "The availability domain number of the instance. If none is provided, it will start with AD-1 and continue in round-robin."
+    type        = number
+    default     = null
+}
+
 variable "instance_shape" {
   type = string
 }
@@ -451,6 +457,11 @@ variable "freeform_tags" {
 
 variable "use_regional_subnet" {
   type = bool
+}
+
+variable "ad_number" {
+    description = "The availability domain number of the instance. If none is provided, it will start with AD-1 and continue in round-robin."
+    type        = string
 }
 
 variable "volume_name" {}
