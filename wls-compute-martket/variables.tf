@@ -17,7 +17,11 @@ variable "region" {
     type        = string
     description = "tenancy id"
 }
-
+variable "ad_number" {
+    description = "The availability domain number of the instance. If none is provided, it will start with AD-1 and continue in round-robin."
+    type        = number
+    default     = null
+}
 /*
 ********************
 * WLS Instance Config
@@ -25,7 +29,7 @@ variable "region" {
 */
 variable "compartment_ocid" {
   type        = string
-  description = "compartment for weblogic instances"
+  description = "compartment for weblogic instance"
 }
 
 // Note: This is the opc user's SSH public key text and not the key file path.
@@ -37,6 +41,12 @@ variable "ssh_public_key" {
 variable "service_name" {
   type        = string
   description = "prefix for stack resources"
+}
+
+variable "instance_create_vnic_details_private_ip" {
+  type        = string
+  default     = "10.70.41.34"
+  description = "vnic private_ip"
 }
 
 #Provide WLS custom image OCID
@@ -161,17 +171,6 @@ variable "allow_manual_domain_extension" {
   description = "flag indicating that domain will be manually extended for managed servers"
 }
 
-variable "wls_expose_admin_port" {
-  type = bool
-  default = false
-  description = "[WARNING] Selecting this option will expose the console to the internet if the default 0.0.0.0/0 CIDR is used. You should change the CIDR range below to allow access to a trusted IP range."
-}
-
-variable "wls_admin_port_source_cidr" {
-  type = string
-  default = "0.0.0.0/0"
-  description = "Create a security list to allow access to the WebLogic Administration Console port to the source CIDR range. [WARNING] Keeping the default 0.0.0.0/0 CIDR will expose the console to the internet. You should change the CIDR range to allow access to a trusted IP range."
-}
 
 /**
  * Supported versions:

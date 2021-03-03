@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2020, Oracle and/or its affiliates. All rights reserved.
  */
 module "compute-keygen" {
   source = "./modules/compute/keygen"
@@ -36,8 +36,6 @@ module "network-vcn-config" {
   wls_ms_port        = var.wls_ms_extern_port
   wls_ms_ssl_port    = var.wls_ms_extern_ssl_port
   wls_admin_port     = var.wls_extern_admin_port
-  wls_expose_admin_port = var.wls_expose_admin_port
-  wls_admin_port_source_cidr = var.wls_admin_port_source_cidr
 
   wls_security_list_name       = ! local.assign_weblogic_public_ip ? "bastion-security-list" : "wls-security-list"
   wls_subnet_cidr              = local.wls_subnet_cidr
@@ -73,9 +71,9 @@ module "network-lb-subnet-1" {
   dhcp_options_id  = module.network-vcn-config.dhcp_options_id
   route_table_id   = module.network-vcn-config.route_table_id[0]
 
-  subnet_name = "${local.service_name_prefix}-${local.lb_subnet_1_name}"
-  #Note: limit for dns label is 15 chars
-  dns_label           = format("%s-%s", local.lb_subnet_1_name, substr(strrev(var.service_name), 0, 7))
+  subnet_name         = "${local.service_name_prefix}-${local.lb_subnet_1_name}"
+   #Note: limit for dns label is 15 chars
+  dns_label           = format("%s-%s",local.lb_subnet_1_name, substr(strrev(var.service_name), 0, 7))
   cidr_block          = local.lb_subnet_1_subnet_cidr
   availability_domain = var.lb_subnet_1_availability_domain_name
   subnetCount         = var.add_load_balancer && var.lb_subnet_1_id == "" ? 1 : 0
@@ -90,15 +88,15 @@ module "network-lb-subnet-1" {
 module "network-lb-subnet-2" {
   source = "./modules/network/subnet"
 
-  compartment_ocid = local.network_compartment_id
-  tenancy_ocid     = var.tenancy_ocid
-  vcn_id           = module.network-vcn.VcnID
-  security_list_id = module.network-vcn-config.lb_security_list_id
-  dhcp_options_id  = module.network-vcn-config.dhcp_options_id
-  route_table_id   = module.network-vcn-config.route_table_id[0]
-  subnet_name      = "${local.service_name_prefix}-${local.lb_subnet_2_name}"
-  #Note: limit for dns label is 15 chars
-  dns_label           = format("%s-%s", local.lb_subnet_2_name, substr(strrev(var.service_name), 0, 7))
+  compartment_ocid    = local.network_compartment_id
+  tenancy_ocid        = var.tenancy_ocid
+  vcn_id              = module.network-vcn.VcnID
+  security_list_id    = module.network-vcn-config.lb_security_list_id
+  dhcp_options_id     = module.network-vcn-config.dhcp_options_id
+  route_table_id      = module.network-vcn-config.route_table_id[0]
+  subnet_name         = "${local.service_name_prefix}-${local.lb_subnet_2_name}"
+   #Note: limit for dns label is 15 chars
+  dns_label           = format("%s-%s",local.lb_subnet_2_name, substr(strrev(var.service_name), 0, 7))
   cidr_block          = local.lb_subnet_2_subnet_cidr
   availability_domain = var.lb_subnet_2_availability_domain_name
   subnetCount         = var.add_load_balancer && var.lb_subnet_2_id == "" && ! var.is_lb_private && ! local.use_regional_subnet && ! local.is_single_ad_region ? 1 : 0
@@ -156,7 +154,6 @@ module "bastion-compute" {
   freeform_tags       = local.freeform_tags
   vm_count            = var.wls_node_count
   use_existing_subnet = var.bastion_subnet_id != ""
-  wls_version         = var.wls_version
 }
 
 /* Create back end  private subnet for wls */
@@ -176,7 +173,7 @@ module "network-wls-private-subnet" {
   dhcp_options_id     = module.network-vcn-config.dhcp_options_id
   route_table_id      = module.network-vcn-config.service_gateway_route_table_id
   subnet_name         = "${local.service_name_prefix}-${var.wls_subnet_name}"
-  dns_label           = format("%s-%s", var.wls_subnet_name, substr(strrev(var.service_name), 0, 7))
+  dns_label           = format("%s-%s",var.wls_subnet_name, substr(strrev(var.service_name), 0, 7))
   cidr_block          = local.wls_subnet_cidr
   availability_domain = var.wls_availability_domain_name
   is_vcn_peered       = local.is_vcn_peering || local.appdb_vcn_peering
@@ -205,7 +202,7 @@ module "network-wls-public-subnet" {
   dhcp_options_id      = module.network-vcn-config.dhcp_options_id
   route_table_id       = module.network-vcn-config.route_table_id[0]
   subnet_name          = "${local.service_name_prefix}-${var.wls_subnet_name}"
-  dns_label            = format("%s-%s", var.wls_subnet_name, substr(strrev(var.service_name), 0, 7))
+  dns_label            = format("%s-%s",var.wls_subnet_name, substr(strrev(var.service_name), 0, 7))
   cidr_block           = local.wls_subnet_cidr
   availability_domain  = var.wls_availability_domain_name
   is_vcn_peered        = local.is_vcn_peering || local.appdb_vcn_peering
@@ -243,10 +240,10 @@ module "network-dns-vms" {
   ocidb_existing_vcn_id = var.ocidb_existing_vcn_id
 
   // VCN peering param
-  is_vcn_peering        = local.is_vcn_peering && ! local.disable_infra_db_vcn_peering
+  is_vcn_peering        = local.is_vcn_peering && !local.disable_infra_db_vcn_peering
   ocidb_dns_subnet_cidr = var.ocidb_dns_subnet_cidr
   # Don't need separate CIDR for appdb_dns_vm. Same with shape also.
-  wls_dns_subnet_cidr = local.is_vcn_peering ? local.wls_dns_subnet_cidr : local.appdb_vcn_peering ? var.appdb_wls_dns_subnet_cidr : ""
+  wls_dns_subnet_cidr   = local.is_vcn_peering ? local.wls_dns_subnet_cidr : local.appdb_vcn_peering ? var.appdb_wls_dns_subnet_cidr : ""
 
   // Adding dependency on vcn-config module
   service_gateway_id      = module.network-vcn-config.wls_service_gateway_services_id
@@ -259,14 +256,14 @@ module "network-dns-vms" {
   ocidb_network_compartment_id = local.ocidb_network_compartment_id
 
   // AppDB related parameters
-  appdb_dbsystem_id            = trimspace(var.appdb_dbsystem_id)
-  appdb_database_id            = var.appdb_database_id
-  appdb_compartment_id         = local.appdb_compartment_id
-  appdb_existing_vcn_id        = var.appdb_existing_vcn_id
+  appdb_dbsystem_id     = trimspace(var.appdb_dbsystem_id)
+  appdb_database_id     = var.appdb_database_id
+  appdb_compartment_id  = local.appdb_compartment_id
+  appdb_existing_vcn_id = var.appdb_existing_vcn_id
   appdb_network_compartment_id = var.appdb_network_compartment_id
 
   // VCN peering param for App DB
-  appdb_vcn_peering     = local.appdb_vcn_peering && ! local.disable_app_db_vcn_peering
+  appdb_vcn_peering     = local.appdb_vcn_peering && !local.disable_app_db_vcn_peering
   appdb_dns_subnet_cidr = var.ociappdb_dns_subnet_cidr
   appdb_instance_shape  = local.appdb_instance_shape
 }
@@ -283,8 +280,6 @@ module "validators" {
   wls_subnet_cidr              = var.wls_subnet_cidr
   lb_subnet_1_cidr             = var.lb_subnet_1_cidr
   lb_subnet_2_cidr             = var.lb_subnet_2_cidr
-  lb_max_bandwidth             = var.lb_max_bandwidth
-  lb_min_bandwidth             = var.lb_min_bandwidth
   bastion_subnet_cidr          = var.bastion_subnet_cidr
   assign_public_ip             = local.assign_weblogic_public_ip
   is_bastion_instance_required = var.is_bastion_instance_required
@@ -299,7 +294,7 @@ module "validators" {
   idcs_cloudgate_port          = var.idcs_cloudgate_port
 
   instance_shape = var.instance_shape
-  wls_ocpu_count = var.wls_ocpu_count
+  wls_ocpu_count                = var.wls_ocpu_count
 
   wls_admin_user     = var.wls_admin_user
   wls_admin_password = var.wls_admin_password_ocid
@@ -312,8 +307,6 @@ module "validators" {
   wls_cluster_mc_port       = var.wls_cluster_mc_port
   wls_extern_admin_port     = var.wls_extern_admin_port
   wls_extern_ssl_admin_port = var.wls_extern_ssl_admin_port
-  wls_admin_port_source_cidr= var.wls_admin_port_source_cidr
-  wls_expose_admin_port     = var.wls_expose_admin_port
 
   wls_availability_domain_name = local.wls_availability_domain
   lb_availability_domain_name1 = local.lb_availability_domain_name1
@@ -336,7 +329,7 @@ module "validators" {
   ocidb_pdb_service_name = var.ocidb_pdb_service_name
   is_oci_db              = local.is_oci_db
   ocidb_version          = local.is_oci_db ? data.oci_database_db_home.ocidb_db_home[0].db_version : ""
-  app_ocidb_version      = local.is_atp_appdb || ! var.configure_app_db ? "" : data.oci_database_db_home.ociappdb_db_home[0].db_version
+  app_ocidb_version      = local.is_atp_appdb || !var.configure_app_db ? "" : data.oci_database_db_home.ociappdb_db_home[0].db_version
   oci_db_password_ocid   = var.oci_db_password_ocid
 
   // ATP DB Params
@@ -351,8 +344,8 @@ module "validators" {
   db_port     = var.db_port
 
   // APP DB
-  configure_app_db     = var.configure_app_db
-  app_db_password_ocid = var.app_db_password_ocid
+  configure_app_db = var.configure_app_db
+  app_db_password_ocid   = var.app_db_password_ocid
 
   // Network compartments
   network_compartment_id       = var.network_compartment_id
@@ -361,10 +354,10 @@ module "validators" {
   // VCN peering variables
   disable_infra_db_vcn_peering = local.disable_infra_db_vcn_peering
   disable_app_db_vcn_peering   = local.disable_app_db_vcn_peering
-  use_local_vcn_peering        = var.use_local_vcn_peering
-  ocidb_existing_vcn_id        = var.ocidb_existing_vcn_id
-  ocidb_dns_subnet_cidr        = var.ocidb_dns_subnet_cidr
-  wls_dns_subnet_cidr          = var.wls_dns_subnet_cidr
+  use_local_vcn_peering = var.use_local_vcn_peering
+  ocidb_existing_vcn_id = var.ocidb_existing_vcn_id
+  ocidb_dns_subnet_cidr = var.ocidb_dns_subnet_cidr
+  wls_dns_subnet_cidr   = var.wls_dns_subnet_cidr
 
   use_regional_subnet = local.use_regional_subnet
 
@@ -377,21 +370,15 @@ module "validators" {
 
 resource "oci_load_balancer_load_balancer" "wls-loadbalancer" {
   count          = local.lbCount
-  shape          = "flexible"
+  shape          = var.lb_shape
   compartment_id = local.network_compartment_id
 
   subnet_ids = compact(
     concat(
       compact(module.network-lb-subnet-1.subnet_id),
       compact(module.network-lb-subnet-2.subnet_id),
-    )
+    ),
   )
- 
-  shape_details {
-    #Required
-    maximum_bandwidth_in_mbps = var.lb_max_bandwidth
-    minimum_bandwidth_in_mbps = var.lb_min_bandwidth
-  }
   display_name  = "${local.service_name_prefix}-lb"
   is_private    = var.is_lb_private
   defined_tags  = local.defined_tags
@@ -405,7 +392,7 @@ module "compute" {
   compartment_ocid              = local.compartment_ocid
   instance_image_ocid           = var.instance_image_id
   numVMInstances                = var.wls_node_count
-  availability_domain           = local.wls_availability_domain
+  availability_domain           = var.wls_availability_domain
   subnet_ocid                   = local.assign_weblogic_public_ip ? element(module.network-wls-public-subnet.subnet_id, 0) : element(module.network-wls-private-subnet.subnet_id, 0)
   region                        = var.region
   ssh_public_key                = var.ssh_public_key
@@ -470,18 +457,18 @@ module "compute" {
   atp_db_id    = trimspace(var.atp_db_id)
 
   // Application DB Params
-  configure_app_db               = var.configure_app_db
-  appdb_compartment_id           = local.is_atp_appdb ? var.app_atp_db_compartment_id : var.appdb_compartment_id
-  appdb_network_compartment_id   = local.appdb_network_compartment_id
-  appdb_existing_vcn_id          = var.appdb_existing_vcn_id
-  appdb_dbsystem_id              = var.appdb_dbsystem_id
-  appdb_database_id              = var.appdb_database_id
-  appdb_pdb_service_name         = var.appdb_pdb_service_name
-  app_db_user                    = local.is_atp_appdb ? var.app_atp_db_user : var.app_db_user
-  app_db_password_ocid           = local.is_atp_appdb ? var.app_atp_db_password_ocid : var.app_db_password_ocid
-  app_db_port                    = var.appdb_port
-  app_atp_db_level               = var.app_atp_db_level
-  app_atp_db_id                  = trimspace(var.app_atp_db_id)
+  configure_app_db             = var.configure_app_db
+  appdb_compartment_id         = local.is_atp_appdb ? var.app_atp_db_compartment_id : var.appdb_compartment_id
+  appdb_network_compartment_id = local.appdb_network_compartment_id
+  appdb_existing_vcn_id        = var.appdb_existing_vcn_id
+  appdb_dbsystem_id            = var.appdb_dbsystem_id
+  appdb_database_id            = var.appdb_database_id
+  appdb_pdb_service_name       = var.appdb_pdb_service_name
+  app_db_user                  = local.is_atp_appdb ? var.app_atp_db_user : var.app_db_user
+  app_db_password_ocid         = local.is_atp_appdb ? var.app_atp_db_password_ocid : var.app_db_password_ocid
+  app_db_port                  = var.appdb_port
+  app_atp_db_level             = var.app_atp_db_level
+  app_atp_db_id                = trimspace(var.app_atp_db_id)
   appdb_existing_vcn_add_seclist = var.appdb_existing_vcn_add_seclist
 
   // Dev or Prod mode
@@ -497,7 +484,7 @@ module "compute" {
   is_vcn_peered = module.network-dns-vms.is_vcn_peered
 
   // required for dependency on WLS DNS VM to be created prior to compute
-  wls_dns_vm_ip                = module.network-dns-vms.wls_dns_vm_private_ip
+  wls_dns_vm_ip = module.network-dns-vms.wls_dns_vm_private_ip
   is_bastion_instance_required = var.is_bastion_instance_required
 
   assign_public_ip = local.assign_weblogic_public_ip
@@ -506,7 +493,7 @@ module "compute" {
   defined_tags     = local.defined_tags
   freeform_tags    = local.freeform_tags
 
-  lbip                         = var.add_load_balancer ? element(coalescelist(oci_load_balancer_load_balancer.wls-loadbalancer.*.ip_addresses, list(list("")))[0], 0) : ""
+  lbip = var.add_load_balancer ? element(coalescelist(oci_load_balancer_load_balancer.wls-loadbalancer.*.ip_addresses, list(list("")))[0], 0) : ""
   disable_infra_db_vcn_peering = local.disable_infra_db_vcn_peering
   disable_app_db_vcn_peering   = local.disable_app_db_vcn_peering
 }
@@ -549,6 +536,7 @@ module "lb" {
   numVMInstances                = var.wls_node_count
   name                          = "${local.service_name_prefix}-lb"
   lb_backendset_name            = "${local.service_name_prefix}-lb-backendset"
+  shape                         = var.lb_shape
   is_idcs_selected              = var.is_idcs_selected
   idcs_cloudgate_port           = var.idcs_cloudgate_port
   defined_tags                  = local.defined_tags
