@@ -392,7 +392,7 @@ module "compute" {
   compartment_ocid              = local.compartment_ocid
   instance_image_ocid           = var.instance_image_id
   numVMInstances                = var.wls_node_count
-  availability_domain           = var.wls_availability_domain
+  availability_domain           = local.wls_availability_domain
   subnet_ocid                   = local.assign_weblogic_public_ip ? element(module.network-wls-public-subnet.subnet_id, 0) : element(module.network-wls-private-subnet.subnet_id, 0)
   region                        = var.region
   ssh_public_key                = var.ssh_public_key
