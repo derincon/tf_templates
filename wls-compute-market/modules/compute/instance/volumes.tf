@@ -9,7 +9,7 @@ module "middleware-volume" {
   compute_name_prefix   = var.compute_name_prefix
   numVMInstances        = var.numVMInstances
   use_regional_subnet   = var.use_regional_subnet
-  ad_names              = local.ad_number
+  ad_names              = var.ad_number
   compartment_ocid      = var.compartment_ocid
   defined_tags          = var.defined_tags
   freeform_tags         = var.freeform_tags
@@ -18,12 +18,12 @@ module "middleware-volume" {
 
 module "data-volume" {
   source = "./volume"
-  
+
   availability_domain   = var.availability_domain
   compute_name_prefix   = var.compute_name_prefix
   numVMInstances        = var.numVMInstances
   use_regional_subnet   = var.use_regional_subnet
-  ad_names              = local.ad_number
+  ad_names              = var.ad_number
   compartment_ocid      = var.compartment_ocid
   defined_tags          = var.defined_tags
   freeform_tags         = var.freeform_tags
