@@ -33,8 +33,8 @@ data "template_file" "ad_names" {
 }
 
 data "template_file" "ad_number" {
-  ad_number    = var.ad_number
-  template =  (var.instance_shape=="VM.Standard.E3.Flex" || (tonumber(lookup(data.oci_limits_limit_values.compute_shape_service_limits[ad_number].limit_values[0], "value")) > 0))?lookup(data.oci_identity_availability_domains.ADs.availability_domains[ad_number], "name"):""
+  adnumb    = tonumber(var.ad_number)
+  template =  (var.instance_shape=="VM.Standard.E3.Flex" || (tonumber(lookup(data.oci_limits_limit_values.compute_shape_service_limits[adnumb].limit_values[0], "value")) > 0))?lookup(data.oci_identity_availability_domains.ADs.availability_domains[adnumb], "name"):""
 }
 
 data "oci_limits_limit_values" "compute_shape_service_limits" {
