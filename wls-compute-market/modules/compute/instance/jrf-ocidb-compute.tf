@@ -6,7 +6,7 @@
 resource "oci_core_instance" "wls_app_instance" {
   count = local.is_oci_db && !var.is_vcn_peered? var.numVMInstances: 0
 
-    availability_domain = availability_domain = var.use_regional_subnet?local.ad_number:var.availability_domain
+    availability_domain = var.use_regional_subnet?local.ad_number:var.availability_domain
   //availability_domain = var.use_regional_subnet?local.ad_number[count.index % length(local.ad_number)]:var.availability_domain
   //availability_domain = var.use_regional_subnet == "" ? var.availability_domain : local.ad_number[0]
   compartment_id      = var.compartment_ocid
