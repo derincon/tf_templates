@@ -22,7 +22,6 @@ resource "oci_core_instance" "wls_no_jrf_instance" {
     display_name     = "primaryvnic"
     assign_public_ip = var.assign_public_ip
     hostname_label   = "${local.host_label}-${count.index}"
-    private_ip       = var.instance_create_vnic_details_private_ip
   }
 
   shape_config {
