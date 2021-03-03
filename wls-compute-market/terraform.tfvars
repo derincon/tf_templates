@@ -43,6 +43,7 @@ wls_admin_password_ocid = "ocid1.vaultsecret.oc1."
 use_advanced_wls_instance_config = "false"
 wls_existing_vcn_id = "ocid1.vcn.oc1."
 wls_subnet_id = "ocid1.subnet.oc1."
+wls_node_count = 1
 add_JRF = "true"
 configure_app_db = "false"
 
