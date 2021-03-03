@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2021, Oracle and/or its affiliates. All rights reserved.
  */
 variable original_service_name {}
 variable service_name_prefix {}
@@ -40,6 +40,14 @@ variable wls_availability_domain_name {}
 variable lb_availability_domain_name1 {}
 variable lb_availability_domain_name2 {}
 
+variable lb_max_bandwidth{
+  type= number
+}
+
+variable lb_min_bandwidth{
+  type= number
+}
+
 // WLS version and artifacts
 variable wls_version {}
 
@@ -61,6 +69,14 @@ variable "lb_subnet_2_id" {}
 variable "is_lb_private" {}
 
 variable "bastion_subnet_id" {}
+
+variable "wls_admin_port_source_cidr" {
+  type = string
+}
+
+variable "wls_expose_admin_port" {
+  type = bool
+}
 
 // OCI DB Params
 variable "ocidb_compartment_id" {}

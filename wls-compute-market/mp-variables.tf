@@ -5,7 +5,7 @@
 /* Please do not change these values */
 
 variable "mp_baselinux_instance_image_id" {
-  default = "ocid1.image.oc1..aaaaaaaatbokpfj2x3oio7ibv7tuzl3twuqpfeuwq4xcy4xr6hekjzuccuza"
+  default = "ocid1.image.oc1..aaaaaaaanvui7teqxr7mkiyta2gw5ollzdhxi7nl2yijlowker5qwxfgjj2q"
 }
 
 variable "mp_baselinux_listing_id" {
@@ -13,7 +13,7 @@ variable "mp_baselinux_listing_id" {
 }
 
 variable "mp_baselinux_listing_resource_version" {
-  default = "19.3.3-190816034153"
+  default = "20.4.3-201217050708"
 }
 
 /*
@@ -32,7 +32,7 @@ default = "ocid1.appcataloglisting.oc1..aaaaaaaa653zc2e4fsem5hhwinmfgnv3xp4dmbq6
 }
 
 variable "mp_listing_resource_version" {
-default = "20.4.2-201118155940"
+default = "21.1.1-210115010654"
 }
 
 # Used in UI instead of assign_weblogic_public_ip

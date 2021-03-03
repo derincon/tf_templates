@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2021, Oracle and/or its affiliates. All rights reserved.
  */
 
 # Output the private and public IPs of the instance
@@ -62,7 +62,7 @@ output "Loadbalancer_Subnets_Id" {
   )
 }
 
-output "Weblogic_Subnet_Id" {
+output "WebLogic_Subnet_Id" {
   value = distinct(
     compact(
       concat(
@@ -78,50 +78,46 @@ output "Load_Balancer_Ip" {
 }
 
 locals {
-  new_bastion_details=join(" ", formatlist(
-    "{\n       \"Instance Id\":\"%s\",\n       \"Instance Name\":\"%s\",\n       \"Private IP\":\"%s\",\n       \"Public IP\":\"%s\"\n       }",
+  new_bastion_details=jsonencode(join(" ", formatlist(
+    "{       Instance Id:%s,       Instance Name:%s,       Private IP:%s,       Public IP:%s       }",
     module.bastion-compute.id,
     module.bastion-compute.display_name,
     module.bastion-compute.privateIp,
     module.bastion-compute.publicIp,
-  ))
+  )))
 
-  existing_bastion_details=join(" ", formatlist(
-    "{\n       \"Instance Id\":\"%s\",\n       \"Instance Name\":\"%s\",\n       \"Private IP\":\"%s\",\n       \"Public IP\":\"%s\"\n       }",
+  existing_bastion_details=jsonencode(join(" ", formatlist(
+    "{       Instance Id:%s,       Instance Name:%s,       Private IP:%s,       Public IP:%s       }",
     data.oci_core_instance.existing_bastion_instance.*.id,
     data.oci_core_instance.existing_bastion_instance.*.display_name,
     data.oci_core_instance.existing_bastion_instance.*.private_ip,
     data.oci_core_instance.existing_bastion_instance.*.public_ip
-  ))
+  )))
 }
 
 output "Bastion_Instance" {
   value = var.existing_bastion_instance_id==""?local.new_bastion_details: local.existing_bastion_details
 }
 
-output "Weblogic_Instances" {
-  value = join(" ", formatlist(
-    "{\n       \"Instance Id\":\"%s\",\n       \"Instance name\":\"%s\",\n       \"Availability Domain\":\"%s\",\n       \"Instance shape\":\"%s\",\n       \"Private IP\":\"%s\",\n       \"Public IP\":\"%s\"\n       }",
+output "WebLogic_Instances" {
+  value = jsonencode(join(" ", formatlist(
+    "{       Instance Id:%s,       Instance name:%s,       Availability Domain:%s,       Instance shape:%s,       Private IP:%s,       Public IP:%s       }",
     module.compute.InstanceOcids,
     module.compute.display_names,
     module.compute.AvailabilityDomains,
     module.compute.InstanceShapes,
     module.compute.InstancePrivateIPs,
     module.compute.InstancePublicIPs,
-  ))
+  )))
 }
 
-output "Weblogic_Version" {
+output "WebLogic_Version" {
   value = format(
     "%s %s %s",
     module.compute.WlsVersion,
     local.edition_map[upper(var.wls_edition)],
     local.prov_type,
   )
-}
-
-output "Weblogic_Edition" {
-  value = var.wls_edition
 }
 
 output "WebLogic_Server_Administration_Console" {

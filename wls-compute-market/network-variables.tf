@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2021, Oracle and/or its affiliates. All rights reserved.
  */
 
 /**
@@ -135,9 +135,16 @@ variable "bastion_subnet_id" {
   description = "OCID for existing subnet for bastion instance"
 }
 
-variable "lb_shape" {
-  default = "400Mbps"
-  description = "Shape for the load balancer"
+variable "lb_max_bandwidth" {
+  type = number
+  default = 400
+  description = "Maximum bandwidth for the load balancer"
+}
+
+variable "lb_min_bandwidth" {
+  type        = number
+  default     = 10
+  description = "Minimum bandwidth for the load balancer"
 }
 
 variable "is_lb_private" {

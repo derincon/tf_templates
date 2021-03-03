@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2021, Oracle and/or its affiliates. All rights reserved.
  */
 /*
 * ORM only requires region to be defined for provider.
@@ -7,12 +7,12 @@
 */
 
 provider "oci" {
-  version = ">=3.85,<=3.90"
+  version = "=4.7.0"
   region  = var.region
 }
 
 provider "oci" {
-  version = ">=3.85,<=3.90"
+  version = "=4.7.0"
   alias   = "home"
   region  = local.home_region
 }
