@@ -46,6 +46,7 @@ output "dhcp_options_id" {
   value       = element(coalescelist(oci_core_dhcp_options.wls-dhcp-options1.*.id,list("")), 0)
 }
 
+
 /* Gateways */
 output "wls_internet_gateway_id" {
   value = join("", oci_core_internet_gateway.wls-internet-gateway.*.id)

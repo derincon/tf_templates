@@ -22,9 +22,6 @@ resource "oci_core_instance" "wls-bastion-instance" {
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
     user_data           = data.template_cloudinit_config.bastion-config.rendered
-    variant             = var.patching_tool_key
-    wls_version         = var.wls_version
-    patching_actions    = var.patching_supported_actions
   }
 
   source_details {

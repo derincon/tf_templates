@@ -58,13 +58,6 @@ variable "lb_security_list_name" {
 variable "is_lb_private" {
 }
 
-variable "wls_expose_admin_port" {
-   type    = bool
-}
-
-variable "wls_admin_port_source_cidr" {
-}
-
 // Optional params
 
 /*

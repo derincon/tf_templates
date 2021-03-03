@@ -1,8 +1,8 @@
 #
-# Copyright (c) 2019, 2021, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2019, 2020, Oracle and/or its affiliates. All rights reserved.
 #
-title: Oracle WebLogic Server for Oracle Cloud Infrastructure
-description: Oracle WebLogic Server for Oracle Cloud Infrastructure
+title: WLS Terraform Input Variables
+description: WLS Terraform Input Variables
 schemaVersion: 1.1.0
 version: "20190304"
 groupings:
@@ -48,8 +48,6 @@ groupings:
       - ${bastion_subnet_id}
       - ${bastion_subnet_cidr}
       - ${bastion_instance_shape}
-      - ${wls_expose_admin_port}
-      - ${wls_admin_port_source_cidr}
       - ${add_load_balancer}
       - ${is_lb_private}
       - ${lb_subnet_1_id}
@@ -58,8 +56,7 @@ groupings:
       - ${lb_subnet_1_cidr}
       - ${lb_subnet_2_availability_domain_name}
       - ${lb_subnet_2_cidr}
-      - ${lb_min_bandwidth}
-      - ${lb_max_bandwidth}
+      - ${lb_shape}
 
   - title: "Identity Cloud Service (IDCS) Integration"
     visible: ${add_load_balancer}
@@ -103,7 +100,7 @@ groupings:
       - ${oci_db_password_ocid}
       - ${db_port}
 
-  - title: "Disable Infra Database Local VCN Peering"
+  - title: "Disable Infra Database local VCN Peering"
     visible: ${add_JRF}
     variables:
       - ${disable_infra_db_vcn_peering}
@@ -142,7 +139,7 @@ groupings:
       - ${app_db_password_ocid}
       - ${appdb_port}
 
-  - title: "Disable Application Database Local VCN Peering"
+  - title: "Disable Application Database local VCN Peering"
     visible: ${configure_app_db}
     variables:
       - ${disable_app_db_vcn_peering}
@@ -201,60 +198,6 @@ groupings:
       - ${volume_name}
 
 
-outputs:
-  Virtual_Cloud_Network_Id:
-    type: ocid
-    title: Virtual Cloud Network Id
-  Is_VCN_Peered:
-    type: link
-    title: Is VCN Peered
-    visible: false
-  WebLogic_Subnet_Id:
-    type: link
-    title: WebLogic Subnet Id
-    visible: false
-  Loadbalancer_Subnets_Id:
-    type: link
-    title: Loadbalancer Subnets Id
-    visible: false
-  Load_Balancer_Ip:
-    type: csv
-    title: Load Balancer IP
-  Fusion_Middleware_Control_Console:
-    type: link
-    title: Fusion Middleware Control Console
-  Provisioning_Status:
-    type: link
-    title: Provisioning Status
-    visible: false
-  Sample_Application_protected_by_IDCS:
-    type: link
-    title: Sample Application Protected By IDCS
-  Virtual_Cloud_Network_CIDR:
-    type: link
-    title: Virtual Cloud Network CIDR
-  
-outputGroups:
-  - title: WebLogic
-    outputs:
-      - ${Fusion_Middleware_Control_Console}
-      - ${Sample_Application_protected_by_IDCS}
-      - ${Sample_Application}
-      - ${WebLogic_Server_Administration_Console}
-      - ${WebLogic_Version}
-      - ${WebLogic_Instances}
-  - title: Networking
-    outputs:
-      - ${Virtual_Cloud_Network_CIDR}
-      - ${Load_Balancer_Ip}
-      - ${Virtual_Cloud_Network_Id}
-  - title: Bastion
-    outputs:
-      - ${Bastion_Instance}
-  - title: Listing
-    outputs:
-      - ${Listing_Version}
-  
 variables:
   # WLS Instance Configuration
   service_name:
@@ -375,7 +318,7 @@ variables:
     visible: ${orm_create_mode}
     type: string
     title: Validated Secrets OCID for WebLogic Server Admin Password
-    description: "The OCID of the Secret that contains the password for the administrator in the WebLogic Server domain. The value must begin with ocid1.vaultsecret. Use a WebLogic Administrator password that starts with a letter, is between 8 and 30 characters long, contains at least one number, and, optionally, any number of the special characters ($ # _). For example, Ach1z0#d. Please refer to the documentation https://docs.oracle.com/en/cloud/paas/weblogic-cloud/user/you-begin-oracle-weblogic-cloud.html for creating secrets."
+    description: "The OCID of the Secret that contains the password for the administrator in the WebLogic Server domain. The value must begin with ocid1.vaultsecret. Use a WebLogic Administrator password that starts with a letter, is between 8 and 30 characters long, contains at least one number, and, optionally, any number of the special characters ($ # _). For example, Ach1z0#d."
     pattern: ^ocid1.vaultsecret.*$
     required: true
 
@@ -550,15 +493,19 @@ variables:
   subnet_compartment_id:
     visible:
       and:
-        - eq:
-            - ${vcn_strategy}
-            - "Use Existing VCN"
-        - eq:
-            - ${subnet_strategy_existing_vcn}
-            - "Use Existing Subnet"
+        - ${orm_create_mode}
+        - and:
+            - eq:
+                - ${vcn_strategy}
+                - "Use Existing VCN"
+            - and:
+                - eq:
+                    - ${subnet_strategy_existing_vcn}
+                    - "Use Existing Subnet"
     type: oci:identity:compartment:id
     title: Subnet Compartment
-    description: The compartment where you have subnets created.
+    description: The compartment where you have subnets created. The value must begin with ocid1.compartment.
+    pattern: ^ocid1.compartment.*$
     required: true
     default: ${compartment_ocid}
 
@@ -821,65 +768,6 @@ variables:
       compartmentId: ${compartment_ocid}
       imageId: ${mp_baselinux_instance_image_id}
 
-  # WLS admin console port configuration for public subnet
-  wls_expose_admin_port:
-    visible:
-      and:
-        - ${orm_create_mode}
-        - and:
-            - eq:
-                - ${subnet_type}
-                - "Use Public Subnet"
-            - or:
-                - and:
-                    - eq:
-                        - ${vcn_strategy}
-                        - "Use Existing VCN"
-                    - eq:
-                        - ${subnet_strategy_existing_vcn}
-                        - "Create New Subnet"
-                - and:
-                    - eq:
-                        - ${vcn_strategy}
-                        - "Create New VCN"
-                    - eq:
-                        - ${subnet_strategy_new_vcn}
-                        - "Create New Subnet"
-    type: boolean
-    default: false
-    title: Enable Access to Administration Console
-
-  wls_admin_port_source_cidr:
-    visible:
-      and:
-        - ${orm_create_mode}
-        - and:
-            - ${wls_expose_admin_port}
-            - and:
-                - eq:
-                    - ${subnet_type}
-                    - "Use Public Subnet"
-                - or:
-                    - and:
-                        - eq:
-                            - ${vcn_strategy}
-                            - "Use Existing VCN"
-                        - eq:
-                            - ${subnet_strategy_existing_vcn}
-                            - "Create New Subnet"
-                    - and:
-                        - eq:
-                            - ${vcn_strategy}
-                            - "Create New VCN"
-                        - eq:
-                            - ${subnet_strategy_new_vcn}
-                            - "Create New Subnet"
-    type: string
-    default: 0.0.0.0/0
-    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
-    title:  Source CIDR
-    required: true
-
   # Load Balancer Configuration
   add_load_balancer:
     type: boolean
@@ -1111,25 +999,16 @@ variables:
     title: Existing Subnet 2 for Load Balancer
     description: An existing subnet to use for the second load balancer node. This field is required only if you are not using regional subnets.
 
-  lb_min_bandwidth:
+  lb_shape:
     visible: ${add_load_balancer}
-    type: integer
-    title: Minimum bandwidth for Load Balancer Flexible shape
-    description: Create Load Balancer with Flexible shape and size of bandwidth shape.The minimum service limit is 10 Mbps.
-    minimum: 10
-    maximum: 8000
-    default: 10
-    required: true
-
-  lb_max_bandwidth:
-    visible: ${add_load_balancer}
-    type: integer
-    title: Maximum bandwidth for Load Balancer Flexible shape
-    description: Create Load Balancer with Flexible shape and size of bandwidth shape.The maximum service limit is 8000 Mbps. Please check the service limits page in the console to provide accurate number.
-    minimum: 10
-    maximum: 8000
-    default: 400
-    required: true
+    type: enum
+    title: Load balancer Shape
+    description: The shape for Load balancer
+    enum:
+      - 100Mbps
+      - 400Mbps
+      - 8000Mbps
+    default: 400Mbps
 
   create_policies:
     visible: ${orm_create_mode}
@@ -1248,7 +1127,7 @@ variables:
     type: string
     required: true
     title: Secrets OCID for Autonomous Database ADMIN Password
-    description: The secrets OCID that has the password for the ADMIN user in the autonomous database. The value must begin with ocid1.vaultsecret. Please refer to the documentation https://docs.oracle.com/en/cloud/paas/weblogic-cloud/user/you-begin-oracle-weblogic-cloud.html for creating secrets.
+    description: The secrets OCID that has the password for the ADMIN user in the autonomous database. The value must begin with ocid1.vaultsecret.
     pattern: ^ocid1.vaultsecret.*$
 
   app_atp_db_user:
@@ -1273,7 +1152,7 @@ variables:
     type: string
     required: true
     title: Secret OCID for Autonomous Application Database User Password
-    description: The secrets OCID that has the password for the Application Database user in the autonomous database. The value must begin with ocid1.vaultsecret.Please refer to the documentation https://docs.oracle.com/en/cloud/paas/weblogic-cloud/user/you-begin-oracle-weblogic-cloud.html for creating secrets.
+    description: The secrets OCID that has the password for the Application Database user in the autonomous database. The value must begin with ocid1.vaultsecret.
     pattern: ^ocid1.vaultsecret.*$
 
   atp_db_wallet_password:
@@ -1652,7 +1531,7 @@ variables:
     type: string
     required: true
     title: Secrets OCID for Database Administrator Password
-    description: The Secrets OCID that contains password for the database administrator. The value must begin with ocid1.vaultsecret. Please refer to the documentation https://docs.oracle.com/en/cloud/paas/weblogic-cloud/user/you-begin-oracle-weblogic-cloud.html for creating secrets.
+    description: The Secrets OCID that contains password for the database administrator. The value must begin with ocid1.vaultsecret.
     pattern: ^ocid1.vaultsecret.*$
 
   app_db_password_ocid:
@@ -1665,7 +1544,7 @@ variables:
     type: string
     required: true
     title: Secrets OCID for Database User Password
-    description: The Secrets OCID that contains password for the database User. The value must begin with ocid1.vaultsecret. Please refer to the documentation https://docs.oracle.com/en/cloud/paas/weblogic-cloud/user/you-begin-oracle-weblogic-cloud.html for creating secrets.
+    description: The Secrets OCID that contains password for the database User. The value must begin with ocid1.vaultsecret.
     pattern: ^ocid1.vaultsecret.*$
 
   # VCN peering related controls
@@ -1692,9 +1571,9 @@ variables:
                   - ${subnet_strategy_existing_vcn}
                   - "Use Existing Subnet"
     type: boolean
-    title: Infra DB VCN is already Peered with the WLS VCN
+    title: InfraDB VCN is already Peered with the WLS VCN
     required: true
-    description: Disable Infra Database Local VCN Peering. Selecting this check box is for Advanced Users only. Before you select this checkbox, make sure the WebLogic Server VCN and the Infra Database VCNs are peered as in <a target="_blank" href="https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/localVCNpeering.htm">Local VCN Peering in OCI</a>. The Database Listener Port should be opened for connections from WebLogic Server VCN CIDR range only.
+    description: Disable Infra Database local VCN Peering. Selecting this option is for Advanced users only. Before selecting this checkbox, make sure the WLS and InfraDB VCN are peered as per <a target="_blank" href="https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/localVCNpeering.htm">Local VCN Peering in OCI</a> to peer the VCNs and make sure Database Listen Port is opened for connections from WLS VCN CIDR range.
 
   #Disable App DB VCN Peering
   disable_app_db_vcn_peering:
@@ -1725,7 +1604,7 @@ variables:
     type: boolean
     title: Application Database VCN is already Peered with the WLS VCN
     required: true
-    description: Disable Application Database Local VCN Peering.  Selecting this check box is for Advanced Users only. Before you select this check box, make sure the WebLogic Server VCN and the Application Database VCNs are peered as in <a target="_blank" href="https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/localVCNpeering.htm">Local VCN Peering in OCI</a>. The Database Listener Port should be opened for connections from Weblogic Server VCN CIDR range only.
+    description: Disable Application Database local VCN Peering.  Selecting this option is for Advanced users only. Before selecting this checkbox, make sure the WLS and Application Database VCN are peered as per <a target="_blank" href="https://docs.cloud.oracle.com/en-us/iaas/Content/Network/Tasks/localVCNpeering.htm">Local VCN Peering in OCI</a> to peer the VCNs and make sure Database Listen Port is opened for connections from WLS VCN CIDR range
 
   wls_dns_subnet_cidr:
     visible:
@@ -2030,7 +1909,7 @@ variables:
     minLength: 1
     maxLength: 1024
     title: Secrets OCID for IDCS Client Secret
-    description: The Secrets OCID that contains secret of a confidential application in Identity Cloud Service that is used to create the necessary artifacts in Identity Cloud Service. The value must begin with ocid1.vaultsecret. Please refer to the documentation https://docs.oracle.com/en/cloud/paas/weblogic-cloud/user/you-begin-oracle-weblogic-cloud.html for creating secrets.
+    description: The Secrets OCID that contains secret of a confidential application in Identity Cloud Service that is used to create the necessary artifacts in Identity Cloud Service. The value must begin with ocid1.vaultsecret.
     pattern: ^ocid1.vaultsecret.*$
     required: true
 

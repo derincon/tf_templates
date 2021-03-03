@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2020, Oracle and/or its affiliates. All rights reserved.
  */
 
 locals {
@@ -37,9 +37,6 @@ locals {
   has_lb_subnet_2_cidr              = var.lb_subnet_2_cidr!=""
   missing_wls_subnet_cidr           = var.existing_vcn_id!="" && var.wls_subnet_id=="" ?!local.has_wls_subnet_cidr: false
   missing_lb_subnet_1_cidr          = (var.add_load_balancer) && var.existing_vcn_id!="" && var.lb_subnet_1_id=="" ?!local.has_lb_subnet_1_cidr: false
-  invalid_lb_bandwidth              = (var.add_load_balancer) ?  (var.lb_max_bandwidth > 8000) || (var.lb_min_bandwidth < 10) || (var.lb_max_bandwidth < var.lb_min_bandwidth):false
-
-  invalid_wls_admin_port_source_cidr = var.wls_expose_admin_port ?  length(regexall("^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$", var.wls_admin_port_source_cidr)) == 0 : false
 
   //missing_lb_subnet_2_cidr          = "${var.existing_vcn_id!="" && var.lb_subnet_2_id=="" && var.use_regional_subnet == "false" && local.is_single_ad_region == "false"?local.has_lb_subnet_2_cidr: 0}"
   //missing_mgmt_backend_subnet_cidr = ((var.existing_vcn_id!="") && (var.assign_public_ip=="false") && var.bastion_subnet_id=="")?local.has_mgmt_subnet_cidr : false
@@ -213,9 +210,6 @@ locals {
   wls_console_ssl_port_msg = "WLSC-ERROR: The value for wls_console_ssl_port=[${var.wls_console_ssl_port}] is not valid. The value has to be greater than 0."
   validate_wls_console_ssl_port = local.invalid_wls_console_ssl_port ? local.validators_msg_map[local.wls_console_ssl_port_msg] : null
 
-  invalid_wls_admin_port_source_cidr_msg = "WLSC-ERROR: The value for wls_admin_port_source_cidr=[${var.wls_admin_port_source_cidr}] is not valid. The value does not match the regular expression ^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])"
-  validate_wls_admin_port_source_cidr = local.invalid_wls_admin_port_source_cidr ? local.validators_msg_map[local.invalid_wls_admin_port_source_cidr_msg] : null
-
   wls_extern_admin_port_msg = "WLSC-ERROR: The value for wls_extern_admin_port=[${var.wls_extern_admin_port}] is not valid. The value has to be greater than 0."
   validate_wls_extern_admin_port = local.invalid_wls_extern_admin_port ? local.validators_msg_map[local.wls_extern_admin_port_msg] : null
 
@@ -322,7 +316,4 @@ locals {
   unsupported_ocidb_msg ="WLSC-ERROR: OCI Database Versions 18c and above are not supported with FMW 11gR1"
   validate_unsupported_ocidb = local.invalid_ocidb_selection ? local.validators_msg_map[local.unsupported_ocidb_msg] : ""
   validate_unsupported_app_ocidb = local.invalid_app_ocidb_selection ? local.validators_msg_map[local.unsupported_ocidb_msg] : ""
-
-  lb_bandwidth_msg = "WLSC-ERROR: Please provide valid lb_max_bandwidth and lb_min_bandwidth values based on lb flexible quota limit in the tenancy"
-  validate_lb_bandwidth = local.invalid_lb_bandwidth ? local.validators_msg_map[local.lb_bandwidth_msg] : ""
 }

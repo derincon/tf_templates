@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2020, Oracle and/or its affiliates. All rights reserved.
  */
 variable "compartment_ocid" {}
 
@@ -11,6 +11,10 @@ variable "subnet_ocids" {
 
 variable "instance_private_ips" {
   type = list
+}
+
+variable "shape" {
+  default = "400Mbps"
 }
 
 variable "name" {

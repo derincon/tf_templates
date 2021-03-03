@@ -14,12 +14,11 @@ locals {
   #if LB is requested and regional or single ad region, source: single lb subnet cidr
   #if LB is requested and non regional,  source: primary and secondary lb subnet cidrs
   #if no lb open it to anywhere,  source:"0.0.0.0/0"
-  wls_ms_source_cidrs         = var.add_load_balancer ? ((var.use_regional_subnets || var.is_single_ad_region) ? [var.lb_subnet_1_cidr] : [var.lb_subnet_1_cidr, var.lb_subnet_2_cidr]) : ["0.0.0.0/0"]
-  wls_admin_port_source_cidrs = var.wls_expose_admin_port ? [var.wls_admin_port_source_cidr] : []
+   wls_ms_source_cidrs                = var.add_load_balancer ? ( (var.use_regional_subnets|| var.is_single_ad_region) ? [var.lb_subnet_1_cidr] : [var.lb_subnet_1_cidr, var.lb_subnet_2_cidr]) : ["0.0.0.0/0"]
 }
 
 /*
-* Create security rules for WLS ssh and admin ports
+* Create security rules for WLS admin ports
 * Usage: Weblogic subnet or bastion subnet
 *
 * Creates following secrules:
@@ -27,6 +26,7 @@ locals {
 *   destination 0.0.0.0/0, protocol all
 * ingress:
 *   Source 0.0.0.0/0, protocol TCP, Destination Port: 22 <ssh port>
+*   Source 0.0.0.0/0, protocol TCP, Destination Port: <wls_ssl_admin_port>
 *   Source 0.0.0.0/0, protocol TCP, Destination Port: <wls_ssl_admin_port>
 *   Source <WLS Subnet CIDR>, protocol TCP, Destination Port: ALL
 */
@@ -56,20 +56,15 @@ resource "oci_core_security_list" "wls-security-list" {
     }
   }
 
-  // allow public internet access to WLS admin console ssl port
-  dynamic "ingress_security_rules" {
-    iterator = cidr_iterator
-    for_each = local.wls_admin_port_source_cidrs
+  // allow public internet access to admin console ssl port
+  ingress_security_rules {
+    protocol  = "6" // tcp
+    source    = "0.0.0.0/0"
+    stateless = false
 
-    content {
-      protocol  = "6" // tcp
-      source    = cidr_iterator.value
-      stateless = false
-
-      tcp_options {
-        min = var.wls_ssl_admin_port
-        max = var.wls_ssl_admin_port
-      }
+    tcp_options {
+      min = var.wls_ssl_admin_port
+      max = var.wls_ssl_admin_port
     }
   }
   defined_tags  = var.defined_tags
