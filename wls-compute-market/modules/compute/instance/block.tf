@@ -34,23 +34,23 @@ resource "oci_core_volume_attachment" "wls-data-block-volume-attach-atp" {
   volume_id       = module.data-volume.DataVolumeOcids[count.index/ var.num_volumes]
 }
 
-resource "oci_core_volume_attachment" "wls-mw-block-volume-attach-ocidb" {
+resource "oci_core_volume_attachment" "wls-mw-block-volume-attach-app" {
   count           =  local.is_oci_db && !var.is_vcn_peered? var.numVMInstances * var.num_volumes: 0
   display_name    = "${var.compute_name_prefix}-block-volume-attach-${count.index}"
   attachment_type = "iscsi"
-  instance_id     = oci_core_instance.wls_ocidb_instance.*.id[count.index / var.num_volumes]
+  instance_id     = oci_core_instance.wls_app_instance.*.id[count.index / var.num_volumes]
   volume_id       = module.middleware-volume.DataVolumeOcids[count.index / var.num_volumes]
 }
 
-resource "oci_core_volume_attachment" "wls-data-block-volume-attach-ocidb" {
+resource "oci_core_volume_attachment" "wls-data-block-volume-attach-os" {
   count           = local.is_oci_db && !var.is_vcn_peered? var.numVMInstances * var.num_volumes: 0
   display_name    = "${var.compute_name_prefix}-block-volume-attach-${count.index}"
   attachment_type = "iscsi"
-  instance_id     = oci_core_instance.wls_ocidb_instance.*.id[count.index / var.num_volumes]
+  instance_id     = oci_core_instance.wls_app_instance.*.id[count.index / var.num_volumes]
   volume_id       = module.data-volume.DataVolumeOcids[count.index/ var.num_volumes]
 }
 
-resource "oci_core_volume_attachment" "wls-mw-block-volume-attach-ocidb-peeredvcn" {
+resource "oci_core_volume_attachment" "wls-mw-block-volume-attach-app-peeredvcn" {
   count           =  local.is_oci_db && var.is_vcn_peered? var.numVMInstances * var.num_volumes: 0
   display_name    = "${var.compute_name_prefix}-block-volume-attach-${count.index}"
   attachment_type = "iscsi"
@@ -58,7 +58,7 @@ resource "oci_core_volume_attachment" "wls-mw-block-volume-attach-ocidb-peeredvc
   volume_id       = module.middleware-volume.DataVolumeOcids[count.index / var.num_volumes]
 }
 
-resource "oci_core_volume_attachment" "wls-data-block-volume-attach-ocidb-peeredvcn" {
+resource "oci_core_volume_attachment" "wls-data-block-volume-attach-os-peeredvcn" {
   count           = local.is_oci_db && var.is_vcn_peered? var.numVMInstances * var.num_volumes: 0
   display_name    = "${var.compute_name_prefix}-block-volume-attach-${count.index}"
   attachment_type = "iscsi"

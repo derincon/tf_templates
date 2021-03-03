@@ -5,6 +5,7 @@
 locals {
   host_label = "${var.compute_name_prefix}-${var.vnic_prefix}"
   ad_names   = compact(data.template_file.ad_names.*.rendered)
+  ad_number   = compact(data.template_file.ad_number.*.rendered)
 
   is_oci_db         = trimspace(var.ocidb_dbsystem_id)!= ""?true: false
   is_oci_app_db     = trimspace(var.appdb_dbsystem_id)!= "" ? true : false

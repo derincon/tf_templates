@@ -8,7 +8,7 @@
 resource "oci_core_instance" "wls_no_jrf_instance" {
   count = !local.is_apply_JRF? var.numVMInstances: 0
 
-  availability_domain = var.use_regional_subnet?local.ad_names[count.index % length(local.ad_names)]:var.availability_domain
+  availability_domain = var.wls_subnet_id == "" ? var.wls_availability_domain_name : local.ad_number[0]
 
   compartment_id      = var.compartment_ocid
   display_name        = "${local.host_label}-${count.index}"
