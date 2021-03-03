@@ -11,11 +11,11 @@ data "template_cloudinit_config" "config" {
   part {
     filename     = "ainit.sh"
     content_type = "text/x-shellscript"
-    content      = "${data.template_file.key_script.rendered}"
+    content      = data.template_file.key_script.rendered
   }
   part {
     filename     = "init.sh"
     content_type = "text/x-shellscript"
-    content      = "${file(var.bootStrapFile)}"
+    content      = file(var.bootStrapFile)
   }
 }

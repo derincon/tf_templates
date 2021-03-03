@@ -127,7 +127,7 @@ data "oci_core_shapes" "oci_shapes" {
   availability_domain = lookup(data.oci_identity_availability_domains.ADs.availability_domains[count.index], "name")
   filter {
     name ="name"
-    values= ["${var.instance_shape}"]
+    values= [var.instance_shape]
   }
 }
 

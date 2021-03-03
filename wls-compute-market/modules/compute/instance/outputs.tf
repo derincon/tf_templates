@@ -20,7 +20,7 @@ output "display_names" {
 }
 
 output "WlsVersion" {
-  value = "${var.wls_version}"
+  value = var.wls_version
 }
 
 output "InstanceShapes" {

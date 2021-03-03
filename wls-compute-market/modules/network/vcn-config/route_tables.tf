@@ -23,9 +23,9 @@
 resource "oci_core_default_route_table" "wls-default-route-table1" {
   count = (var.wls_vcn_name=="" || var.use_existing_subnets)?0:1
 
-  //  compartment_id  = "${var.compartment_id}"
-  //  vcn_id          = "${var.vcn_id}"
-  //  display_name    = "${var.route_table_name}"
+  //  compartment_id  = var.compartment_id
+  //  vcn_id          = var.vcn_id
+  //  display_name    = var.route_table_name
   manage_default_resource_id = lookup(data.oci_core_vcns.tf_vcns.virtual_networks[0],"default_route_table_id")
 
   route_rules {

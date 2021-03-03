@@ -7,7 +7,7 @@ data "oci_identity_availability_domains" "ADs" {
 }
 data "oci_identity_tenancy" "tenancy" {
   #Required
-  tenancy_id = "${var.tenancy_ocid}"
+  tenancy_id = var.tenancy_ocid
 }
 locals {
   num_ads = length(
@@ -18,7 +18,7 @@ locals {
 data "oci_identity_regions" "home-region" {
   filter {
     name   = "key"
-    values = ["${data.oci_identity_tenancy.tenancy.home_region_key}"]
+    values = [data.oci_identity_tenancy.tenancy.home_region_key]
   }
 }
 data "oci_core_instance" "existing_bastion_instance" {
