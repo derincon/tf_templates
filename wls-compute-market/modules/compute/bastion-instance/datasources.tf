@@ -9,12 +9,12 @@ locals {
 
 # Gets a list of Availability Domains in the tenancy
 data "oci_identity_availability_domains" "ADs" {
-  compartment_id = "var.tenancy_ocid
+  compartment_id = var.tenancy_ocid
 }
 
 
 data "template_file" "bastion_key_script" {
-  template = file("./modules/compute/bastion-instance/templates/bastion-keys.tpl")
+  template = "${file("./modules/compute/bastion-instance/templates/bastion-keys.tpl")}"
 
   vars = {
     pubKey     = local.bastion_public_ssh_key
