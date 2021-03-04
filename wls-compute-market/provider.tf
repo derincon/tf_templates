@@ -16,12 +16,3 @@ provider "oci" {
   alias   = "home"
   region  = local.home_region
 }
-
-terraform {
-  required_providers {
-    oci = {
-      version = ">=3.85
-      source = "hashicorp/oci"
-    }
-  }
-}
