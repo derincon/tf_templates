@@ -2,7 +2,7 @@
  * Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
  */
 
-module "middleware-volume" {
+module "app-volume" {
   source = "./volume"
 
   availability_domain   = var.availability_domain
@@ -13,7 +13,7 @@ module "middleware-volume" {
   compartment_ocid      = var.compartment_ocid
   defined_tags          = var.defined_tags
   freeform_tags         = var.freeform_tags
-  volume_name           = "mw"
+  volume_name           = "app"
 }
 
 module "data-volume" {

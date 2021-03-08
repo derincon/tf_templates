@@ -5,7 +5,6 @@
 locals {
   host_label = "${var.compute_name_prefix}-${var.vnic_prefix}"
   ad_names   = compact(data.template_file.ad_names.*.rendered)
-  ad_number   = compact(data.template_file.ad_number.*.rendered)
 
   is_oci_db         = trimspace(var.ocidb_dbsystem_id)!= ""?true: false
   is_oci_app_db     = trimspace(var.appdb_dbsystem_id)!= "" ? true : false
@@ -14,6 +13,7 @@ locals {
   is_apply_JRF      = local.is_oci_db || local.is_atp_db? true: false
   is_configure_appdb= local.is_oci_app_db || local.is_atp_app_db
   num_fault_domains = length(data.oci_identity_fault_domains.wls_fault_domains.fault_domains)
+  num_ad_domains = length(data.oci_identity_availability_domains.ADs.availability_domains)
   wls_subnet_cidr   = (var.wls_subnet_id == "") ? var.wls_subnet_cidr : data.oci_core_subnet.wls_subnet[0].cidr_block
 
   # Default to "ASM" if storage_management is not found. This attribute is not there for baremetal and Exadata.

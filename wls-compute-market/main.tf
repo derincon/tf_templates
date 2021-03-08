@@ -242,7 +242,7 @@ module "network-dns-vms" {
   // VCN peering param
   is_vcn_peering        = local.is_vcn_peering && !local.disable_infra_db_vcn_peering
   ocidb_dns_subnet_cidr = var.ocidb_dns_subnet_cidr
-  # Don't need separate CIDR for appdb_dns_vm. Same with shape also.
+  //# Don't need separate CIDR for appdb_dns_vm. Same with shape also.
   wls_dns_subnet_cidr   = local.is_vcn_peering ? local.wls_dns_subnet_cidr : local.appdb_vcn_peering ? var.appdb_wls_dns_subnet_cidr : ""
 
   // Adding dependency on vcn-config module
@@ -392,6 +392,7 @@ module "compute" {
   compartment_ocid              = local.compartment_ocid
   instance_image_ocid           = var.instance_image_id
   numVMInstances                = var.wls_node_count
+  ad_number                     = var.ad_number
   availability_domain           = local.wls_availability_domain
   subnet_ocid                   = local.assign_weblogic_public_ip ? element(module.network-wls-public-subnet.subnet_id, 0) : element(module.network-wls-private-subnet.subnet_id, 0)
   region                        = var.region

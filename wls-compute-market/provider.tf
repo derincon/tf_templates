@@ -7,12 +7,10 @@
 */
 
 provider "oci" {
-  version = ">=3.85,<=3.90"
   region  = var.region
 }
 
 provider "oci" {
-  version = ">=3.85,<=3.90"
   alias   = "home"
   region  = local.home_region
 }
