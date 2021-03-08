@@ -36,10 +36,6 @@ variable "ad_names" {
   type = list
 }
 
-variable "ad_number" {
-  type = list
-}
-
 variable "index" {
   default = "0"
 }

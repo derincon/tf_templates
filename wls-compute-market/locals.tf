@@ -8,7 +8,7 @@ locals {
   is_atp_db        = trimspace(var.atp_db_id) == "" ? false : true
   is_atp_appdb     = trimspace(var.app_atp_db_id) == "" ? false : true
   home_region      = lookup(data.oci_identity_regions.home-region.regions[0], "name")
-
+  num_ad_domains   = length(data.oci_identity_availability_domains.ADs.availability_domains)
   // Deploy sample-app only if the edition is not SE
   deploy_sample_app = (var.deploy_sample_app && var.wls_edition != "SE")
 

@@ -6,7 +6,7 @@
 resource "oci_core_instance" "wls_instance" {
   count = local.is_oci_db && local.is_apply_JRF? var.numVMInstances: 0
 
-  availability_domain = var.use_regional_subnet == "" ? var.availability_domain : local.ad_names[0]
+  availability_domain = var.use_regional_subnet?local.ad_names[count.index % length(local.ad_names)]:var.availability_domain
   compartment_id      = var.compartment_ocid
   display_name        = "${local.host_label}-${count.index}"
   shape               = var.instance_shape
