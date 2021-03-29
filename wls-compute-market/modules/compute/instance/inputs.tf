@@ -33,8 +33,6 @@ variable "numVMInstances" {
 
 variable "ad_number" {}
 
-variable "instance_private_ip" {}
-
 # WLS Related variables
 
 variable "wls_admin_user" {
