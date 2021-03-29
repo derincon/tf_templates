@@ -11,6 +11,10 @@ variable "subnet_ocid" {}
 
 variable "instance_vnic_private_ip" {}
 
+variable "ssh_public_key" {
+  type = string
+}
+
 variable "compute_name_prefix" {
   default = "wlsc-instance"
 }
