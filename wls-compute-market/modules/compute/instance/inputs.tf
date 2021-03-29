@@ -9,9 +9,7 @@ variable "availability_domain" {}
 
 variable "subnet_ocid" {}
 
-variable "ssh_public_key" {
-  type = string
-}
+variable "instance_vnic_private_ip" {}
 
 variable "compute_name_prefix" {
   default = "wlsc-instance"
@@ -30,6 +28,8 @@ variable "numVMInstances" {
 }
 
 variable "ad_number" {}
+
+variable "instance_private_ip" {}
 
 # WLS Related variables
 

@@ -45,7 +45,6 @@ variable "service_name" {
 
 variable "instance_create_vnic_details_private_ip" {
   type        = string
-  default     = "10.70.41.34"
   description = "vnic private_ip"
 }
 

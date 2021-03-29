@@ -398,6 +398,7 @@ module "compute" {
   region                        = var.region
   ssh_public_key                = var.ssh_public_key
   instance_shape                = var.instance_shape
+  instance_vnic_private_ip      = var.instance_create_vnic_details_private_ip
   wls_ocpu_count                = var.wls_ocpu_count
   wls_admin_user                = var.wls_admin_user
   wls_domain_name               = format("%s_domain", local.service_name_prefix)

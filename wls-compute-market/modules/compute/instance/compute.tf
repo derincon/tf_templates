@@ -10,15 +10,15 @@ resource "oci_core_instance" "wls_instance" {
   compartment_id      = var.compartment_ocid
   display_name        = "${local.host_label}-${count.index}"
   shape               = var.instance_shape
-
-  defined_tags = var.defined_tags
-  freeform_tags = var.freeform_tags
+  defined_tags        = var.defined_tags
+  freeform_tags       = var.freeform_tags
 
   create_vnic_details {
     subnet_id        = var.subnet_ocid
     display_name     = "primaryvnic"
     assign_public_ip = var.assign_public_ip
     hostname_label   = "${local.host_label}-${count.index}"
+    private_ip       = var.instance_vnic_private_ip
   }
 
   shape_config {

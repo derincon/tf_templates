@@ -8,7 +8,7 @@ resource "oci_core_volume_attachment" "wls-block-volume-attach-app" {
   display_name    = "${var.compute_name_prefix}-block-volume-attach-${count.index}"
   attachment_type = "iscsi"
   instance_id     = oci_core_instance.wls_instance.*.id[count.index / var.num_volumes]
-  volume_id       = module.app-volume.DataVolumeOcids[count.index / var.num_volumes]
+  volume_id       = module.middleware-volume.DataVolumeOcids[count.index / var.num_volumes]
 }
 
 resource "oci_core_volume_attachment" "wls-block-volume-attach-data" {
