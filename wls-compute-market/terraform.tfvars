@@ -50,6 +50,7 @@ configure_app_db = "false"
 # Compute Configurations
 service_name = "<instance_name_lowercase>"
 instance_shape = "VM.Standard2.1"
+instance_create_vnic_details_private_ip = ""
 ssh_public_key = "<bastion_opc_ssh_public_key"
 
 is_bastion_instance_required = "false"
