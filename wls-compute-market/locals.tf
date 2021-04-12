@@ -135,4 +135,19 @@ locals {
 
   lb_subnet_1_name = var.is_lb_private ? "lbprist1" : "lbpubst1"
   lb_subnet_2_name = var.is_lb_private ? "lbprist2" : "lbpubst2"
+
+  #map of private ip node number and value
+  node_1_ip_defined = var.wls_node_count < 1 && var.instance_1_private_ip == "~!@#$%^&*()" ? false : true
+  node_2_ip_defined = var.wls_node_count < 2 && var.instance_2_private_ip == "~!@#$%^&*()" ? false : true
+  node_3_ip_defined = var.wls_node_count < 3 && var.instance_3_private_ip == "~!@#$%^&*()" ? false : true
+  node_4_ip_defined = var.wls_node_count < 4 && var.instance_4_private_ip == "~!@#$%^&*()" ? false : true
+
+
+  node_1_private_ip = false == local.node_1_ip_defined ? "" : var.instance_1_private_ip
+  node_2_private_ip = false == local.node_2_ip_defined ? "" : var.instance_2_private_ip
+  node_3_private_ip = false == local.node_3_ip_defined ? "" : var.instance_3_private_ip
+  node_4_private_ip = false == local.node_4_ip_defined ? "" : var.instance_4_private_ip
+
+  #instances_vnic_private_ip = compact([local.node_1_private_ip, local.node_2_private_ip, local.node_3_private_ip, local.node_4_private_ip])
+
 }

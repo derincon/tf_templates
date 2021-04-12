@@ -43,9 +43,24 @@ variable "service_name" {
   description = "prefix for stack resources"
 }
 
-variable "instance_create_vnic_details_private_ip" {
+variable "instance_1_private_ip" {
   type        = string
-  description = "vnic private_ip"
+  description = "instance 1 vnic private_ip_1"
+}
+
+variable "instance_2_private_ip" {
+  type        = string
+  description = "instance 2 vnic private_ip"
+}
+
+variable "instance_3_private_ip" {
+  type        = string
+  description = "instance 3 vnic private_ip_1"
+}
+
+variable "instance_4_private_ip" {
+  type        = string
+  description = "instance 4 vnic private_ip"
 }
 
 #Provide WLS custom image OCID

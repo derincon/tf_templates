@@ -18,7 +18,7 @@ resource "oci_core_instance" "wls_instance" {
     display_name     = "primaryvnic"
     assign_public_ip = var.assign_public_ip
     hostname_label   = "${local.host_label}-${count.index}"
-    private_ip       = var.instance_vnic_private_ip
+    private_ip       = element(var.instances_vnic_private_ip, count.index)
   }
 
   shape_config {

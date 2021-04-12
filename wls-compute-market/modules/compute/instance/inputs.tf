@@ -9,7 +9,6 @@ variable "availability_domain" {}
 
 variable "subnet_ocid" {}
 
-variable "instance_vnic_private_ip" {}
 
 variable "ssh_public_key" {
   type = string
@@ -32,6 +31,10 @@ variable "numVMInstances" {
 }
 
 variable "ad_number" {}
+
+variable "instances_vnic_private_ip" {
+  type    = list
+}
 
 # WLS Related variables
 
