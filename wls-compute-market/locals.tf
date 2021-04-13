@@ -146,8 +146,6 @@ locals {
   node_1_private_ip = false == local.node_1_ip_defined ? "" : var.instance_1_private_ip
   node_2_private_ip = false == local.node_2_ip_defined ? "" : var.instance_2_private_ip
   node_3_private_ip = false == local.node_3_ip_defined ? "" : var.instance_3_private_ip
-  node_4_private_ip = false == local.node_4_ip_defined ? "" : var.instance_4_private_ip
-
-  #instances_vnic_private_ip = compact([local.node_1_private_ip, local.node_2_private_ip, local.node_3_private_ip, local.node_4_private_ip])
+  node_4_private_ip = false == local.node_4_ip_defined ? "" : var.instance_4_private_ip  
 
 }
