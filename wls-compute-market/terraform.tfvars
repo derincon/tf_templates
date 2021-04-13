@@ -47,10 +47,14 @@ wls_node_count = 1
 add_JRF = "true"
 configure_app_db = "false"
 
+# Weblogic version default value 12.2.1.4 & available 12.2.1.3
+wls_version=""
+
 # Compute Configurations
 service_name = "<instance_name_lowercase>"
 instance_shape = "VM.Standard2.1"
-# Compute instances private ip address
+
+# Compute instances private ip address if the fields are empty the ip will be assigned by dhcp
 instance_1_private_ip = ""
 instance_2_private_ip = ""
 instance_3_private_ip = ""
